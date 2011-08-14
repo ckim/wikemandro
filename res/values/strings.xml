@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+
+body { font-family: arial }
+.editsection {display: none}
+p,ol,li,ul,a {font-size: 12pt }
+h2 { font-size: 14pt; border-top:1px solid #DBDEE2; padding-top: 10px;
+color: darkblue }
+h3 { font-size: 12pt; color: darkgray }
+#toc { width: 100% };
+
+
+
+/* This CSS builds the Word-style outline. */
+ol {
+   list-style: upper-roman;
+   margin-left: 2.25em;
+   padding: 0; }
+ol ol {
+   list-style: lower-alpha; 
+   margin-left: 1.25em;}
+ol ol ol {
+   list-style: lower-roman;
+   margin-left: 2.5em; }
+ol ol ol ol {
+   list-style: decimal; }
+li {
+   padding-left: 2em; }
+li li {
+   padding-left: .4em; }
+li li li {
+   padding-left: 0; }
+   
+   
+   
+   changed to
+   
+ol {
+   list-style: decimal;
+   margin-left: 2.25em;
+   padding: 0; }
+ol ol {
+   list-style: lower-alpha; 
+   margin-left: 1.75em;}
+ol ol ol {
+   list-style: lower-roman;
+   margin-left: 1.5em; }
+ol ol ol ol {
+   list-style: decimal; 
+    margin-left: 1.25em;}
+   
+ol ol ol ol ol {
+   list-style: lower-alpha; 
+    margin-left: 1.25em;}
+   
+ol ol ol ol ol ol {
+   list-style: lower-roman; 
+    margin-left: 1.25em;}
+   
+li {
+   padding-left: .5em; }
+li li {
+   padding-left: .2em; }
+li li li {
+   padding-left: 0; }
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources>
+	<string name="head_css"> &lt;head&gt; \n &lt;style type=&quot;text/css&quot;&gt; \n .editsection {display: none} \n #toc {width: 100%} \n  body { font-family: arial } \n p,li,ul,a {font-size: 12pt } \n h2 { font-size: 14pt; border-top:1px solid #DBDEE2; padding-top: 10px;\n color: darkblue }\n h3 { font-size: 12pt; color: darkgray }\n ol { list-style: decimal;   margin-left: 1.25em;   padding: 0; } \n ol ol { list-style: lower-alpha; margin-left: 1.75em;} \n ol ol ol {list-style: lower-roman; margin-left: 1.75em; } \n ol ol ol ol { list-style: decimal; } \n li { padding-left: .5em; } \n li li { padding-left: .2em; } \n li li li { padding-left: 0; } \n    	&lt;/style&gt; \n &lt;/head&gt; \n</string>
+	<string name="disclaimer"> \n ***DISCLAIMER*** \n \n The application creator and those affiliated with wikem.org including editors, contributing authors, the Harbor-UCLA EM residency program, and other people and organizations related to this site make this information available without warranties of any kind, express or implied. We disclaim any liability, loss, or damage caused by the contents. If you do not wish to be bound by the foregoing cautions and conditions, please uninstall this app. For full disclaimer please visit wikem.org \n</string>
+      
+    
+    <!-- The name of the application. -->
+    <string name="app_name1">WikEM</string>
+    <string name="info"> WikEM is a collection of internal notes and checklists, passed down from resident to resident in the Harbor-UCLA EM Residency Program for over nearly a decade. For more info visit www.wikem.org</string>
+
+    <!-- The label for use as a searchable item -->
+    <string name="search_label">WikEM Entry </string>
+    
+    <!-- edittext stuffs -->
+    <string name="edittext_hint">Type here for custom note...</string>
+
+    <!-- The hint text that appears in the search box. -->
+    <string name="search_hint">full-text: hit \'Enter\' after search term </string>
+
+    <!-- The menu entry that invokes search. -->
+    <string name="menu_edit">Edit Online</string>
+    <string name="menu_search">Search </string>
+    <string name="menu_update"> Update</string>
+    <string name="menu_favorite">Favorite</string>
+    <string name="menu_favorite1">View Favorites</string>
+    <string name="menu_info">About WikEm</string>
+    <string name="menu_viewAll"> View All </string>
+    <!-- The description that will show up in the search settings for this source.  -->
+    <string name="settings_description">WikEM entries</string>
+
+    <!-- General instructions in the main activity. -->
+    <string name="search_instructions">Thank you for using WikEM for Android.\n Please feel free to email feedback to christopherkim.wikem@gmail.com.\n \n Press the search button to get started </string>
+	<string name="first_instructions"> Welcome. WikEM and wikem.org are intended for EM physicians. Before we can begin we will download the most recent content from wikem.org. The wiki is always changing, thus, auto-updating is turned off (so as to avoid exceeding the limits of wireless data-plan). Update as often as you please by simply selecting the option in menu. Enjoy.</string>
+	<!-- To be shown on textview at start activity -->
+	<string name="search_instructions2"> WikEM (hit \'Search\' button to begin, or, browse categories) </string>
+    
+    	<!-- To be shown on textview at dbload -->
+    	<string name="dbLoad_text"> WikEM (wiki + Emergency Medicine) is an open-source-style knowledge management system designed to facilitate dissemination of concise, practical Emergency Medicine knowledge written by an expert community. Medical knowledge traditionally stems from textbooks and practice guidelines whose content is now largely being distributed electronically. The problem with this system within emergency medicine is three-fold. First, the need for costly subscriptions creates access barriers which are exclusive to institutions that can afford them. Second, medical knowledge and practice standards are in a continuous state of flux, rendering the most recent publications (eg. edition of a textbook) obsolete within a few years. Third, it is often necessary in emergency settings that outside knowledge can be easily accessible and distilled to the essentials for patient management.WikEM hopes to overcome these problems with a wiki style database which is adapted to mobile operating systems such as Android.</string>
+    	<string name="dbLoad_label"> WikEM database builder</string>
+    
+    <!-- Shown above search results when we receive a search request. -->
+   
+
+    <!-- Search failure message. -->
+    <string name="no_results">No results found for \"%s\"</string>
+    <string name="no_favorites">No Wikem entires added to favorites</string>
+    
+    <!--  downloader stuffs-->
+  
+    <string name="success">Most recent WikEM data downloaded successfully.</string>
+    <string name="app_name">WikEM Update Downloader</string>
+    <string name="download_again">Download again</string>
+
+    <string name="download_activity_title">Downloading WikeM Update</string>
+    <string name="download_activity_cancel">Cancel Download</string>
+    <string name="download_activity_progress">Download progress:</string>
+    <string name="download_activity_verifying">Verifying...</string>
+    <string name="download_activity_time_remaining">Time Remaining:</string>
+    <string name="download_activity_time_remaining_unknown">unknown</string>
+    <string name="download_activity_time_remaining_minutes">minutes</string>
+    <string name="download_activity_time_remaining_seconds">seconds</string>
+    <string name="download_activity_time_remaining_hours">hours</string>
+    <string name="download_activity_time_remaining_days">days</string>
+    <string name="download_activity_download_stopped">Download stopped</string>
+    <string name="download_activity_retry">Retry</string>
+    <string name="download_activity_quit">Quit (Return to WikEM)</string>
+    
+    <!-- -stuffs for my title progress bar idea -->
+    <string name="progressbar_1_plus">+</string> 
+  <string name="progressbar_1_minus">-</string> 
+  <string name="progressbar_1_default_progress">Default progress:</string> 
+  <string name="progressbar_1_secondary_progress">Secondary progress:</string> 
+    
+ 
+ 
+    <string-array name="category_array">
+    	<item>Airway/Resus</item>
+        <item>Cards</item> 
+        <item>Derm</item>
+        <item>Drugs</item>      
+        <item>Endo</item>
+        <item>ENT</item>
+        <item>Environ</item>
+        <item>FEN</item>
+		<item>GI</item>
+		<item>GU</item>
+		<item>Heme/Onc</item>
+		<item>ID</item>			
+		<item>Misc/General</item>
+		<item>Nephro</item>
+		<item>Neuro</item>					
+		<item>OB/GYN</item>		
+		<item>Ophtho</item>
+		<item>Ortho</item>
+		<item>Peds</item>
+		<item>Policy</item>
+		<item>Procedures</item>
+		<item>Psych</item>
+		<item>Pulm</item>
+		<item>Rads</item>
+		<item>Rheum</item>
+		<item>Tox</item>
+		<item>Trauma</item>	
+		<item>TropMed</item>
+		<item>WikEM</item> 
+		<item>Admin</item>
+		
+    </string-array>
+    
+     
+ 
+
+<string name= "java_script">pt&gt;function doHighlight(bodyText, searchTerm, highlightStartTag, highlightEndTag) { if ((!highlightStartTag) || (!highlightEndTag)) { highlightStartTag = &quot;&lt;font style='color:blue; background-color:yellow;'&gt;&quot;; highlightEndTag = &quot;&lt;/font&gt;&quot;; } var newText = &quot;&quot;; var i = -1; var lcSearchTerm = searchTerm.toLowerCase(); var lcBodyText = bodyText.toLowerCase(); while (bodyText.length &gt; 0) { i = lcBodyText.indexOf(lcSearchTerm, i+1); if (i &lt; 0) { newText += bodyText; bodyText = &quot;&quot;; } else { if (bodyText.lastIndexOf(&quot;&gt;&quot;, i) &gt;= bodyText.lastIndexOf(&quot;&lt;&quot;, i)) { if (lcBodyText.lastIndexOf(&quot;/script&gt;&quot;, i) &gt;= lcBodyText.lastIndexOf(&quot;&lt;script&quot;, i)) { newText += bodyText.substring(0, i) + highlightStartTag + bodyText.substr(i, searchTerm.length) + highlightEndTag; bodyText = bodyText.substr(i + searchTerm.length); lcBodyText = bodyText.toLowerCase(); i = -1; } } } } return newText; } function searchPrompt(defaultText, treatAsPhrase, textColor, bgColor) { if (!defaultText) { defaultText = &quot;&quot;; } if ((!textColor) || (!bgColor)) { highlightStartTag = &quot;&quot;; highlightEndTag = &quot;&quot;; } else { highlightStartTag = &quot;&lt;font style='color:&quot; + textColor + &quot;; background-color:&quot; + bgColor + &quot;;'&gt;&quot;; highlightEndTag = &quot;&lt;/font&gt;&quot;; } if (treatAsPhrase) { promptText = &quot;Please enter the phrase you'd like to search for:&quot;; } else { promptText = &quot;Please enter the words you'd like to search for, separated by spaces:&quot;; } searchText = prompt(promptText, defaultText); if (!searchText) { alert(&quot;No search terms were entered. Exiting function.&quot;); return false; } return highlightSearchTerms(searchText, treatAsPhrase, true, highlightStartTag, highlightEndTag); } &lt;/script&gt; </string>
+
+
+</resources>

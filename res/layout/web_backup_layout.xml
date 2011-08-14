@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="5dp">
+    <TextView
+            android:id="@+id/word"
+            android:textSize="14dp"
+            android:background="#E2F1F7"
+            android:textColor="#0C0C0D"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" 
+			android:layout_width="fill_parent" 
+			android:layout_height="wrap_content" 
+			android:orientation="vertical">
+- <LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+ 
+            
+  <WebView android:id="@+id/wv1" 
+  			android:layout_height="wrap_content" 
+  			android:layout_width="fill_parent" /> 
+  
+  </LinearLayout>
+  </ScrollView>
+  </LinearLayout>

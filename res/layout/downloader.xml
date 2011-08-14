@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+      <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+          <TextView android:id="@+id/customText"
+              android:layout_width="0dip"
+              android:layout_weight="1"
+              android:layout_height="wrap_content"
+              android:padding="3dip"
+              android:textAppearance="?android:attr/textAppearanceLarge" />
+      </LinearLayout>
+      <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+          <TextView android:text="@string/download_activity_progress"
+              android:layout_width="0dip"
+              android:layout_weight="1"
+              android:layout_height="wrap_content"
+              android:padding="3dip"
+              android:gravity="right"
+              android:textAppearance="?android:attr/textAppearanceMedium" />
+          <TextView android:id="@+id/progress"
+              android:layout_width="0dip"
+              android:layout_weight="1"
+              android:layout_height="wrap_content"
+              android:padding="3dip"
+              android:textAppearance="?android:attr/textAppearanceMedium" />
+      </LinearLayout>
+
+      <LinearLayout
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content">
+          <TextView android:text="@string/download_activity_time_remaining"
+              android:layout_width="0dip"
+              android:layout_weight="1"
+              android:layout_height="wrap_content"
+              android:padding="3dip"
+              android:gravity="right"
+              android:textAppearance="?android:attr/textAppearanceMedium" />
+          <TextView android:id="@+id/time_remaining"
+              android:layout_width="0dip"
+              android:layout_weight="1"
+              android:layout_height="wrap_content"
+              android:padding="3dip"
+              android:textAppearance="?android:attr/textAppearanceMedium" />
+      </LinearLayout>
+
+  <Button android:id="@+id/cancel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginTop="5dip"
+    android:text="@string/download_activity_cancel" />
+    
+    
+    
+    <TextView android:id="@+id/disclaim_text_view"
+        android:text="@string/disclaimer"
+        android:layout_width="fill_parent"
+    android:layout_height="wrap_content" />
+</LinearLayout>

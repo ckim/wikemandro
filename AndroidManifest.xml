@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="wikem.chris.wikemv3"
+      android:versionCode="1"
+      android:versionName="1.0">
+
+
+ <!-- internet permission explicitly needed -->
+        <uses-permission android:name="android.permission.INTERNET" /> 
+        <!-- adding explicit permission for sdcard . wouldnt write to SDcard otherwise -->
+        <!--  in future consider get external storage state ...if no sdcard -->
+        <!-- http://developer.android.com/reference/android/os/Environment.html#getExternalStorageDirectory%28%29 -->
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE"/>
+        <uses-permission android:name="android.permission.WAKE_LOCK" />
+        
+
+    <uses-sdk android:minSdkVersion="5" />
+ 
+ <!--  vmSafemode needed as FROYO implemented jit vm causing issues with my async threads and db-->
+      		<!--  vmSafemode compiles ok as long as 2.2 in build path... hwver, FROYO methods eg. getExternalFilesDir() will give a runtime error-->
+                 
+    <application android:label="@string/app_name1"
+                 android:icon="@drawable/ic_wikem"                        
+                 android:vmSafeMode="true"
+                  >
+                    <!-- Provides search suggestions for words and their definitions. -->
+        <provider android:name="wikem.chris.wikemv3.DictionaryProvider"
+                  android:authorities="wikem.chris.wikemv3.DictionaryProvider" />
+
+        <!-- Points to searchable activity so the whole app can invoke search. -->
+        <meta-data android:name="android.app.default_searchable"
+                   android:value="wikem.chris.wikemv3.SearchableDictionary" />
+                   
+
+        <!-- The default activity of the app; displays search results. -->
+        <activity android:name="wikem.chris.wikemv3.SearchableDictionary"
+                  android:theme="@android:style/Theme.NoTitleBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Receives the search request. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+                
+                <!-- No category needed, because the Intent will specify this class component-->
+            </intent-filter>
+
+            <!-- Points to searchable meta data. -->
+            <meta-data android:name="android.app.searchable"
+                       android:resource="@xml/searchable" />
+
+        </activity>
+   <!-- minor difference launch mode single task and singleInstance. will need to keep multiple dbLoad from instantiating -->     
+        <activity android:name ="wikem.chris.wikemv3.DbLoadActivity"
+        android:label="@string/dbLoad_label"
+        		  android:screenOrientation="nosensor"
+        		  android:launchMode="singleTask" />
+        		  
+        <!-- Displays all wikem entries-->
+        <activity android:name="wikem.chris.wikemv3.ViewAllActivity"
+        		   android:theme="@android:style/Theme.NoTitleBar"/>
+        		   
+      
+        
+		<!-- Displays the stupid categories -->
+        <activity android:name="wikem.chris.wikemv3.CategoryActivity"
+        		   android:theme="@android:style/Theme.NoTitleBar"/>
+         <!-- Displays the favorites -->
+        <activity android:name="wikem.chris.wikemv3.FavoriteActivity"
+        		   android:theme="@android:style/Theme.NoTitleBar"/>
+        		   
+         <!-- Displays a word search after i get mysterious null pointers after getRowid call -->
+        <activity android:name="wikem.chris.wikemv3.WordSearchActivity"
+        		   android:theme="@android:style/Theme.NoTitleBar"/>
+        
+        <!-- Displays the definition of a word. -->
+        <activity android:name="wikem.chris.wikemv3.WebWordActivity"
+                  android:theme="@android:style/Theme.NoTitleBar" >
+                  
+                <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                </intent-filter>
+                
+                  </activity>
+         <activity android:name="wikem.chris.wikemv3.WebWordBackupActivity"
+                  android:theme="@android:style/Theme.NoTitleBar" />
+         <activity android:name="wikem.chris.wikemv3.WebWordTitledActivity"
+                  />
+                  
+
+    
+      <!-- Downloads wikem updates -->             
+	 <activity android:name="wikem.chris.wikemv3.DownloaderTest" 
+	 			android:label="@string/app_name"
+                android:screenOrientation="nosensor"
+        />
+        <activity android:name="wikem.chris.wikemv3.DownloaderActivity"
+            android:label="@string/download_activity_title"
+            android:configChanges="orientation|keyboardHidden"
+             android:screenOrientation="nosensor"
+            android:launchMode="singleTask" />
+             <!-- Makes page to agree with disclaimer before first wikem update -->             
+	 <activity android:name="wikem.chris.wikemv3.DisclaimerActivity" 
+	 			android:label="Disclaimer"
+                android:screenOrientation="nosensor"
+        />
+            
+          
+           
+    </application>
+
+</manifest>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Options Menu for SearchableActivity 
+options menu for  WordActivity moved to word_options
+ -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/search"
+          android:title="@string/menu_search"
+          android:icon="@drawable/ic_menu_search" />
+    <item android:id="@+id/update"
+    	  android:title="@string/menu_update"
+    	  android:icon="@drawable/update" /> 
+   	<item android:id = "@+id/favorite"
+   		  android:title="@string/menu_favorite1"
+   		   android:icon="@drawable/ic_fav" /> 
+   	 <item android:id = "@+id/info"
+   		  android:title="@string/menu_info"
+   		   android:icon="@drawable/ic_info" /> 
+   	 <item android:id="@+id/viewAll"
+   	 		android:title="@string/menu_viewAll" 
+   	 		 android:icon="@drawable/ic_abc" 
+   	 		
+   	 		 />
+   	 		 
+   	 	
+</menu>

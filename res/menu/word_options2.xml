@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  
+  	<item android:id = "@+id/favorite"
+   		  android:title="@string/menu_favorite"
+   		   android:icon="@drawable/ic_fav" /> 
+ 
+ <group android:id="@+id/remove_edit_text_group">
+    <item android:id = "@+id/remove_edit_text"
+   		  android:title="Hide Notes"
+   		  android:icon="@drawable/ic_hidenote" 
+   		   /> </group>
+   		   
+  <group android:id="@+id/show_edit_text_group">
+    <item android:id = "@+id/show_edit_text"
+    	  android:title="Show Notes"
+    	  android:icon="@drawable/ic_shownote"
+    	  />
+  </group> 		   
+    <item android:id = "@+id/edit_online"
+    	  android:title = "@string/menu_edit"
+    	  android:icon= "@drawable/ic_pencil" /> 
+    	  
+    	    <item android:id="@+id/search"
+          android:title="Find Text"
+          android:icon="@drawable/ic_menu_search" />
+          <item android:id = "@+id/about_this_page"
+          android:title = "Info"
+           android:icon="@drawable/ic_info" />
+</menu>
