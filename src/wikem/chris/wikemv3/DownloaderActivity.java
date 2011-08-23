@@ -73,6 +73,8 @@ public class DownloaderActivity extends Activity {
      */
 	public static int max;
 	private void setPreferences(int i){
+		//ugly hack. also use this to insert the custom message if there is one
+		
 	/*
 	 * this ugly piece of code just puts the 'max', ie. the number of wikem entries, into sharedprefs
 	 * 
@@ -85,6 +87,13 @@ public class DownloaderActivity extends Activity {
 	 	SharedPreferences.Editor editor = settings.edit(); 
 	 	editor.putInt("max", i);
 	 	editor.putBoolean("db_loaded", false); //set this to true on successful update
+	 	
+	 	if(containsMyCustomMessage && parsedMessageFromInfoXML!=null){	 	
+	 		editor.putString("message", parsedMessageFromInfoXML);
+	 		//reset the variables
+	 		containsMyCustomMessage = false;
+	 		parsedMessageFromInfoXML = null;
+	 	}
           // Commit the edits!
           editor.commit();
 	}
@@ -513,6 +522,14 @@ public class DownloaderActivity extends Activity {
        	            	 Log.d(LOG_TAG, "ok size of bytes is " + tempBytes);
       	            	  
       	              }
+      	              if(tagNameTemp.matches(MESSAGE_INFO)){
+      	            	  //future use to relay messages eg: <message> "plz upgrade" <message/>
+      	            	  //TODO
+      	            	  containsMyCustomMessage = true;
+      	            	//  super.onReportNeedForUpgrade(); doesnt work. cant use in static class
+      	            	parsedMessageFromInfoXML = xpp.nextText();
+       	            	  
+      	         	       }
       	               
     	          } else if(eventType == XmlPullParser.END_TAG) {
     	              Log.d(LOG_TAG, "End tag ");
@@ -606,42 +623,7 @@ public class DownloaderActivity extends Activity {
             }
         }
 
-      /*  private void downloadDB(Config config) 
-         	throws ClientProtocolException, IOException, FileNotFoundException
-       	 
-       	 {		File pathFile = null;
-       		 	URL u = new URL(DownloaderTest.SRC_OF_DATA);  
-       		    HttpURLConnection c = (HttpURLConnection) u.openConnection();
-       		    try{
-       		    c.setRequestMethod("GET");
-       		    c.setDoOutput(true);
-       		    c.connect();
-       		    if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-       		           throw new AndroidRuntimeException(
-       		               "External storage (SD-Card) not mounted");
-       		       } 
-       		     pathFile = new File(
-       		            mDataDir, DownloaderTest.DESTINATION_FILE); //my datapath location  
-       		         
-       		    //pathFile = new File(appDbDir, newFileName + ".htm");
-       		    FileOutputStream f = new FileOutputStream(pathFile); //make new file with filename of current wikem entry
-
-       		    
-       		    InputStream in = c.getInputStream();
-
-       		    byte[] buffer = new byte[1024];
-       		    int len1 = 0;
-       		    while ( (len1 = in.read(buffer)) > 0 ) {
-       		         f.write(buffer,0, len1);
-       		    }
-       		    f.close();
-       		 }finally {
-       			 
-       		     c.disconnect();
-       		     //return pathFile;
-       		   } 
-       	 }
-*/
+     
 		private void persistantDownload(Config config)
         throws ClientProtocolException, DownloaderException, IOException {
             while(true) {
@@ -682,6 +664,14 @@ public class DownloaderActivity extends Activity {
             mHandler.sendMessage(
                     Message.obtain(mHandler, MSG_REPORT_VERIFYING));
         }
+        //TODO if parse specific method will throw message to upgrade the app
+        //for use for future versions.. to communicate with legacy users
+        /*
+         * i figure make more generic to just give a message to user.
+         */
+     //   private void reportNeedUpgradeApp(String message){
+        //	mHandler.sendMessage(Message.obtain(mHandler, MSG_NEED_UPGRADE_APP, message));
+      //  }
 
         //only called from Downloader class run()
        
@@ -1204,7 +1194,11 @@ public class DownloaderActivity extends Activity {
     private final static int MSG_REPORT_PROGRESS = 2;
     private final static int MSG_REPORT_VERIFYING = 3;
     private final static int MSG_IMAGE_DOWNLOADED = 4;
-
+    
+    //message_info is the tag of potential message that i want to relay to users
+    private final static String MESSAGE_INFO = "message";
+    private static boolean containsMyCustomMessage = false;
+    private static String parsedMessageFromInfoXML = null;
     
     private final Handler mHandler = new Handler() {
         @Override
@@ -1226,6 +1220,7 @@ public class DownloaderActivity extends Activity {
             case MSG_IMAGE_DOWNLOADED:
             	onImageDownloaded((String) msg.obj);
             	break;
+           
             default:
                 throw new IllegalArgumentException("Unknown message id "
                         + msg.what);
@@ -1325,7 +1320,7 @@ public class DownloaderActivity extends Activity {
     	} 
     	    	    	 
     }//end of custom image dl class
-//TODO fix this  ...
+//TODO make this more elegant ...
 	private void onImageDownloaded(String f){
 		((TextView) findViewById(R.id.customText)).setText("Downloading Images... " + f);
 		mProgress.setText(" ");
@@ -1335,5 +1330,18 @@ public class DownloaderActivity extends Activity {
 	 			toast.show();
 	 		}catch(Exception e){e.printStackTrace();}*/
 	}
+//TODO add error message to update this app.
+	/*
+	 * for use in future to notify users to get newer version of app 
+	 * //Retrieve the values
+Set<String> set = new HashSet<String>();
+set = myScores.getStringSet("key", null);
 
+//Set the values
+Set<String> set = new HashSet<String>();
+set.addAll(listOfExistingScores);
+scoreEditor.putStringSet("key", set);
+scoreEditor.commit();
+	 */
+	 
 }

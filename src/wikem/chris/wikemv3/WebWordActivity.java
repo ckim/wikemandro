@@ -290,7 +290,13 @@ import android.widget.Toast;
 						return false;
 					}					
 					else if (link.isAbsolute()){
-						parseAbsoluteLink(url);
+						Log.d("WebWordActivity", "absolute link");
+						// if link is an image don't parse it. do nothing and return true
+						String fileNamespace = "File:"; 
+				
+						if(!url.contains(fileNamespace)){
+							 parseAbsoluteLink(url);
+						}
 					}
 					else{ //dunno why isRelative doesnt work?
 						//relative links

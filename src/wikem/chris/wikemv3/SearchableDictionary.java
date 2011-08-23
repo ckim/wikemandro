@@ -50,9 +50,12 @@ import wikem.chris.wikemv3.WebWordActivity;
 <!--  long = epoch -> the time stamp of update pulled from xml -->
  <!-- boolean first_opened  -> after install true; henceforth after first successful dbload ,  false thereafter-->
  <!-- force_rebuild -> thrown if any sql db query (or upgrade) throws error, such as corrupted db
+ 
+ <!-- String message = some sort of custom message... like 'plz goto market and upgrade your app'..-> 
+ *
  */
-@SuppressWarnings("unused")
-public class SearchableDictionary extends Activity {
+
+ public class SearchableDictionary extends Activity {
 
     private TextView mTextView;
     private ListView mListView;
@@ -157,10 +160,17 @@ public class SearchableDictionary extends Activity {
 				}
 	        	 alertFirstOpened();
          }
+         else if (settings.getString("message", null) != null){
+        	 //if message exists, passed from the info.xml file relay that message to user
+        	 String s = settings.getString("message", "thank you for using WikEM"); //stupid default
+        	 if(s.trim().length()>2){ //dunno why used a char length of 2...just make sure not empty
+        		 alertCustomMessage(s);
+        	 }
+         }
          else if(settings.getBoolean("force_rebuild", false)) {
         	 //ie. force a db rebuild due to error catch in dictdatabase
         	 alertForceDB(); //only option from there is go to donloader test       
-         }
+         }         
          else { //ie. every other time wikem opens...just not the first installation
         	 
         	 //do nothing! everything else is done automatically no?
@@ -171,6 +181,29 @@ public class SearchableDictionary extends Activity {
 	}
     
  
+	private void alertCustomMessage(String message) {
+		// implementation of this is to be determined... 
+		// rationale is to alert users to upgrade their app
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		//String string = getString(R.string.info);
+
+    	builder.setMessage(message)
+    	       .setCancelable(false)
+    	       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+    	           public void onClick(DialogInterface dialog, int id) {
+     	        	   /*
+     	        	    * i guess do nothing!! other than display the alert
+     	        	    */
+    	        	   dialog.cancel();
+    	           }
+    	       });    
+    	 
+    	AlertDialog alert = builder.create();      
+    	alert.show();		
+	}
+
+
+
 	private void alertFirstOpened() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		//String string = getString(R.string.info);

@@ -28,6 +28,8 @@ LoaderManager.LoaderCallbacks<Cursor>{
 	private ListView lv;
 	private TextView tv;
 	private String query;
+    private SimpleCursorAdapter adapter;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
@@ -56,39 +58,9 @@ LoaderManager.LoaderCallbacks<Cursor>{
 		            this.getApplicationContext(),R.layout.result,
 		            null,
 		            from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+    	    	 
     	 
-    	 
-    	 
-        //Cursor cursor = managedQuery(DictionaryProvider.TITLE_URI,
-    	//Cursor cursor = managedQuery(DictionaryProvider.CONTENT_URI,
-        //		null, null, new String[] {query}, null);
-    	//let's see if this works to get all category
-    	//Cursor cursor = managedQuery(DictionaryProvider.CATEGORY_URI, null, null,
-    		//	new String[]{query}, null);
-/*
-     ///   if (cursor == null) {
-            // There are no results
-           tv.setText(getString(R.string.no_results, new Object[] {query}));
-      ///  } else {
-            // Display the number of results
-            int count = cursor.getCount();
-        //    String countString = getResources().getQuantityString(R.plurals.search_results,
-            //                        count, new Object[] {count, query});
-            String countString;
-            if (count == 1){
-	              countString = Integer.toString(count) + " result for " + query;
-            }
-            else{
-	              countString = Integer.toString(count) + " results for " + query;
-            }
-            tv.setText(countString);
-*/
-           
-
-            // Create a simple cursor adapter for the definitions and apply them to the ListView
-    //        SimpleCursorAdapter words = new SimpleCursorAdapter(this,
-            //                              R.layout.result, cursor, from, to);
-            if (adapter != null){
+    	if (adapter != null){
     		lv.setAdapter(adapter);
 
             // Define the on-click listener for the list items
@@ -110,7 +82,6 @@ LoaderManager.LoaderCallbacks<Cursor>{
         }
     
 
-	 private SimpleCursorAdapter adapter;
 
 
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
