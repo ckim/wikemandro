@@ -316,6 +316,8 @@ at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(Web
 				} 	  			     
 				return true;
 		    }
+		    
+//called by parseAbsoluteLink		    
 	private void parseLinkRecursive(String url){
 		/*dunno why sql not matching some of my links . if first match returrned a null cursor
 		 * calls this with underscores for characters that might be causing problem
@@ -376,6 +378,20 @@ at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(Web
               //        new String[] {url}, null);
 	        	//public final Cursor managedQuery (Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
 	        	//public CursorLoader (Context context, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
+	
+/*	
+ * A loader that queries the ContentResolver and returns a Cursor. 
+ * This class implements the Loader protocol in a standard way for querying cursors,
+ *  building on AsyncTaskLoader to perform the cursor query on a background thread so that it does not block the application's UI.
+ *  
+
+A CursorLoader must be built with the full information for the query to perform, 
+either through the CursorLoader(Context, Uri, String[], String, String[], String)
+ or creating an empty instance with CursorLoader(Context) and filling in the desired paramters with setUri(Uri), 
+ setSelection(String), setSelectionArgs(String[]), setSortOrder(String), and setProjection(String[]).
+
+        	CursorLoader(Context context, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder)
+	*/        	
 	        	CursorLoader cursorLoader = new CursorLoader(getApplicationContext(), DictionaryProvider.ID_URI, null, null, new String[] {url},
 	        			null);
 	        			cursor = cursorLoader.loadInBackground();

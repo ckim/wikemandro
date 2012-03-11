@@ -303,8 +303,10 @@ public int updateContent(ContentValues values, String selection, String thePageT
 	}
     public  Cursor getWordMatches(String query, String[] columns) {
         String selection = KEY_WORD + " MATCH ?";
-        String[] selectionArgs = new String[] {query+"*"};
-
+      //  String[] selectionArgs = new String[] {query+"*"};
+//ommit wildcard at end.. get exact match only
+        String[] selectionArgs = new String[] {query};
+        
         return query(selection, selectionArgs, columns);
 
     }
