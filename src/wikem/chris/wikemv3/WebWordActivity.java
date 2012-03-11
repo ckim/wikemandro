@@ -87,7 +87,7 @@ import android.widget.Toast;
 	    	private Uri uri;
 	    	public static CheckUpdatesForPageTask asyncTask ;
 	    	 
-	    	
+	    	public AlertDialog alertDialog;
 	    	
 
 	 	  
@@ -165,6 +165,9 @@ import android.widget.Toast;
 	        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);	        
 	        wv.requestFocus();	 
 	        
+	        //create the dialogbox that webviewclient will use to alert badlinks
+	         alertDialog = new AlertDialog.Builder(this).create();
+
 	        
 	        /*
 	         * create an asynch task to run in background and check online for updates
@@ -279,7 +282,41 @@ at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(Web
 			}*/
 
 		private class MyWebViewClient extends WebViewClient { //True if the host application wants to leave the current WebView and handle the url itself, otherwise return false.
-		    @Override
+			private String badurl;
+			private void startSearchBadLink(){
+				 //find best match.. for link
+	        	 //place underscores (matches any char) so I can LIKE query SQL
+				if(badurl==null){
+					Log.e("wwact", "er why is bad url null?");
+				}
+				else{
+					badurl.replace(' ', '_');
+					badurl.replace('-', '_');
+					badurl.replace('(', '_');
+					badurl.replace(')', '_');
+					parseLinkRecursive(badurl);
+					//launchAWordSearch(url);
+				}
+			}
+			public void alertBadLink() {
+				 
+		    	alertDialog.setMessage("Link does not exist.");
+		    	       alertDialog.setCancelable(true);
+		    	       alertDialog.setButton("Cancel",new DialogInterface.OnClickListener() {
+		    	           public void onClick(DialogInterface dialog, int id) {
+ 		    	        	   dialog.cancel();
+		    	           }
+		    	       });    
+		    	       alertDialog.setButton2("Find best match", new DialogInterface.OnClickListener() {
+		    	           public void onClick(DialogInterface dialog, int id) {
+		    	        	   startSearchBadLink();
+		    	        	   dialog.cancel();
+		    	           }
+		    	       });    
+		    	 
+ 		    	alertDialog.show();		
+			}
+			@Override
 		    public boolean shouldOverrideUrlLoading(WebView view, String url) {
 		    	Log.d("WEBWORDACTVITY", "the url clicked is : " +url);		    	
 			    URI link = null;
@@ -330,7 +367,7 @@ at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(Web
 		 * Non_S%
 		 * 
 		 */
-		
+		Log.d("wwactrecurse", url);
 			 try {		CursorLoader cursorLoader = new CursorLoader(getApplicationContext(), DictionaryProvider.ID_LIKE_URI, null, null, new String[] {url}, null);
 					    cursor = cursorLoader.loadInBackground();
 					        	if (cursor!=null){//returns false if empty
@@ -349,8 +386,8 @@ at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(Web
 					        	else{ //recursion
 					        		Log.e("wwact" , "cursor is nil?!");  
 					        		int tryShorterQuery = (url.length()/2);
-					        			if(tryShorterQuery < 2 ){ //end the recursive search
-					        			launchAWordSearch(url);
+					        			if(tryShorterQuery < 4 ){ //end the recursive search
+					        			launchAWordSearch(badurl);
 					        			}
 					        			else{ //recurse
 					        			parseLinkRecursive(url.substring(0,tryShorterQuery));
@@ -412,21 +449,18 @@ either through the CursorLoader(Context, Uri, String[], String, String[], String
 	        			
 	        	}
 	        	else{ //if cursor was empty
-	        		Log.e("wwact" , "cursor is nil?!");      		        		
+	        		badurl = url; // set uniinitialized var to the badurl.
+	        		Log.e("wwact pareseabsolute link" , "cursor is nil. link doesnt exist.");      		        		
 	        		//cursor.close unnecessary bc null pointer...
 	        		
-	        		//place underscores (matches any char) so I can LIKE query SQL
-	        			url.replace(' ', '_');
-	        			url.replace('-', '_');
-	        			url.replace('(', '_');
-	        			url.replace(')', '_');
-	        			parseLinkRecursive(url);
-	        			//launchAWordSearch(url); 
+	        		alertBadLink();
+	        		
 	        	}	        			        		
 	        }catch(Exception e){Log.e("WEBWORDACTIVITY", "crap error thrown in parseabsolutelink");
 	        //so search for the ""link" if it returns null that there is no wikem entry that matches
 	  //      					String sub = url.substring(1); //get rid of backslash
-	        					launchAWordSearch(url);
+	        					//launchAWordSearch(url);
+	        					alertBadLink();
 	        					}
 					}
 
