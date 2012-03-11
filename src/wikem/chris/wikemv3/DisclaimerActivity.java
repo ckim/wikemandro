@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import wikem.chris.R;
 
 
 public class DisclaimerActivity extends Activity{

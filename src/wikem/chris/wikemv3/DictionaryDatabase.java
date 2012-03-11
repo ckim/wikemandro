@@ -29,6 +29,7 @@ import wikem.chris.wikemv3.ExternalSQLHelper;
 public class DictionaryDatabase {
     private static final String TAG = "DictionaryDatabase";
     public static final String DELETION_TOKEN = "DELETE";
+    public static final String REDIRECT_TOKEN = "REDIRECT";
 
     //The columns we'll include in the dictionary table
     public static final String KEY_WORD = SearchManager.SUGGEST_COLUMN_TEXT_1;
@@ -86,8 +87,30 @@ public int updateContent(ContentValues values, String selection, String thePageT
     
     	 return rowID;
  }
- 
-	public static void updateDeleted() {
+/* 	public static void vacuum(){
+ 		//TODO try to fix werid db phenomena 0926 with reindex?
+ 		//don';t think anything will happen... only works on collated db... instead try vaccumm comand?
+		 Log.d(TAG, "will try vacuum");
+
+ 	   	 SQLiteDatabase db = mDatabaseOpenHelper.getWritableDatabase();   	 
+ 	   	// db.beginTransaction();
+ 	     try {
+ 	    	 //db.execSQL("REINDEX " + FTS_VIRTUAL_TABLE );
+ 	    	 // Log.d(TAG, "reindexed");
+
+ 	    	db.execSQL("VACUUM " + FTS_VIRTUAL_TABLE );
+			 
+ 			 Log.d(TAG, "vacuumed");
+ 	    	 //db.setTransactionSuccessful();
+ 	     } catch(Exception e){e.printStackTrace();Log.e("DD", "caught error vacuuming");}
+ 	     finally {
+ 	      // db.endTransaction();
+ 	       db.close();
+ 	     }
+ 	   	  
+ 	}
+*/
+ public static void updateDeleted() {
 		/*	 * int	 delete(String table, String whereClause, String[] whereArgs) Convenience method for deleting rows in the database.
 		 * returns the number of rows affected if a whereClause is passed in, 0 otherwise. To remove all rows and get a count pass "1" as the whereClause.
 		 */
@@ -107,10 +130,10 @@ public int updateContent(ContentValues values, String selection, String thePageT
 		 Log.d(TAG, "nothing try reindexing");		 
 
     	 db.execSQL("REINDEX " + FTS_VIRTUAL_TABLE );
-		 Log.d(TAG, "reindexed");		 
+		 Log.d(TAG, "deleted entries and reindexed db");	 
 
     	 db.setTransactionSuccessful();
-     } catch(Exception e){e.printStackTrace();Log.e("DD", "caught error reindexing");}
+     } catch(Exception e){e.printStackTrace();Log.e("DD", "caught error in updateDeleted");}
      finally {
        db.endTransaction();
        db.close();
@@ -265,8 +288,13 @@ public int updateContent(ContentValues values, String selection, String thePageT
 		//String[] selectionArgs = new String[]{query+"*"};
 		String[] selectionArgs = new String[]{"%" + query + "%"};
 		Log.d(TAG, "yo yo yo, custom category accessed");
- 		return query(selection, selectionArgs, columns); 
-	}
+ 		
+		//return query(selection, selectionArgs, columns);
+	
+		//get categories in Alphabetical order
+		return queryAlphabetical(selection, selectionArgs, columns, KEY_WORD + " ASC"  );
+ 	}
+	
 	//  The LIKE command allows "Wild cards". A % may be used to match and string, _ will match any single character.
 	public Cursor getWordLike(String query, String[] columns){
 		String selection = KEY_WORD + " LIKE ?";
@@ -334,8 +362,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
             // do something for phones running an SDK before froyo
         	Log.d("dd", "before froyo query");
         }
-        
-        
+       
         try{
         Cursor cursor = builder.query( mDatabaseOpenHelper.getReadableDatabase(),
                 columns, selection, selectionArgs, null, null, null);
@@ -350,7 +377,39 @@ public int updateContent(ContentValues values, String selection, String thePageT
        }catch (Exception e) { e.printStackTrace(); Log.d("dictdatabase", " bad query"); errorInDBSoRebuild();}
        return null;
     }
-   
+    //added for categories, which need to be alphabetical also
+    private static Cursor queryAlphabetical(String selection, String[] selectionArgs, String[] columns, String sortOrder) {
+         
+    	 SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+         builder.setTables(FTS_VIRTUAL_TABLE);
+         builder.setProjectionMap(mColumnMap);
+    
+         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+         if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO){
+             // Do something for froyo and above versions
+             selection += " AND WIKEM_URI IS NOT ?";
+             String delete = DELETION_TOKEN;
+             selectionArgs = new String[]{selectionArgs[0], delete};
+         } else{
+             // do something for phones running an SDK before froyo
+         	Log.d("dd", "before froyo query");
+         }
+         
+         try{
+		         Cursor cursor = builder.query( mDatabaseOpenHelper.getReadableDatabase(),
+		                 columns, selection, selectionArgs, null, null, sortOrder);
+		        if (cursor == null) {
+		            return null;
+		        } else if (!cursor.moveToFirst()) {
+		            cursor.close();
+		            return null;
+		        }
+		
+		        return cursor;
+ 
+      }catch (Exception e) { e.printStackTrace(); Log.d("dictdatabase", " bad query"); errorInDBSoRebuild();}
+      return null;
+    }
     private static Cursor queryAll(String selection, String[] selectionArgs, String[] columns, String sortOrder) {
         /* extra parameter for sort. only called by getAll (giving no selection parameters) bc, android having isues with alphabetical unless 
          * giving query explicit sort order
@@ -391,7 +450,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
     }
     
     public static void initializeDB(){ //for the external. otw was initializing too many times
-    	 e = new ExternalSQLHelper (DownloaderTest.DESTINATION_FILE); 
+    	 e = new ExternalSQLHelper (Singleton.DESTINATION_FILE); 
     }
     public static void closeExternalDB(){ //for the external
     	e.close();
@@ -491,6 +550,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
             try{       
             bruteForceUpgrade(db.getPath()); //closes db and copies the downloaded android compiant db
            loadOldFavorites();
+          // DictionaryDatabase.vacuum();
               int currentapiVersion = android.os.Build.VERSION.SDK_INT;
             if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO){
                 // Do nothing for froyo and above versions
@@ -522,17 +582,31 @@ public int updateContent(ContentValues values, String selection, String thePageT
     	}
     	
 		 private File getAppDir(){
-			 int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-			 File d = null;
-	           if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO){
-	               // Do something for froyo and above versions
-	  			  d = mHelperContext.getExternalFilesDir(null);
-
-	           } else {
-	               // do something for phones running an SDK before froyo
-	           	d = new File(
-				            Environment.getExternalStorageDirectory(), DownloaderTest.BACKUP_PATH); //my datapath location			       
-				        }     
+			  File d = null;
+				SharedPreferences settings = mHelperContext.getSharedPreferences(SearchableDictionary.PREFS_NAME, 0);
+	       		String path = settings.getString("dl-path", "null");
+	       		if (!path.equals("null")){
+	       			d = new File(path);
+	       			if (d.exists()){ 
+	       				Log.d("dictdatab", "path is " + path);
+		       			return d;
+	       			}
+	       		}
+	          //otherwise something is strange... either d is null or the path from the sharedprefs doesnt exist
+ 	      	   int currentapiVersion = android.os.Build.VERSION.SDK_INT;					
+		       		if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO){
+		               // Do something for froyo and above versions
+		  			  d = mHelperContext.getExternalFilesDir(null);
+		           } else {
+		               // do something for phones running an SDK before froyo
+		           	d = new File(
+					            Environment.getExternalStorageDirectory(), Singleton.BACKUP_PATH); //my datapath location			       
+					        }    
+		       		/////////////still if the path doesnt exist use the default path set up at first run
+		       		if (!d.exists()){
+		       			String defaultPath = settings.getString("default-path", "null");		       			
+		       			d = new File (defaultPath);
+		       		}
 	           return d;       
 			 
 		 }
@@ -543,7 +617,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
 		
 		private   void overwriteNativeDb(String path){
 			File dbDir = getAppDir();
-			File src = new File(dbDir, DownloaderTest.DESTINATION_FILE);
+			File src = new File(dbDir, Singleton.DESTINATION_FILE);
 			File dest = new File (path );
 			try {
 				copy (src, dest);
@@ -568,11 +642,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
 		    in.close();
 		    out.close();
 		}
-		 
-		
-		
-		
-    
+
     }//end of helper class
 
 

@@ -19,7 +19,7 @@ There was ever only one copy of the reference data on the phone, no redundant du
 The main application code could be updated without having to download the reference data.
  */
 import java.io.File;
-
+ 
 import android.database.sqlite.SQLiteDatabase;
 //import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.os.Environment;
@@ -45,7 +45,7 @@ public abstract class ExternalStorageReadOnlyHelper{
        File appDbDir = new File(
            Environment.getExternalStorageDirectory(),            
       //     "Android/data/com.mycompany.myapp/db");
-           DownloaderTest.BACKUP_PATH); //my datapath location
+           Singleton.BACKUP_PATH); //my datapath location
        if (!appDbDir.exists()) {
    		Log.d("external SQL helper", "having to make datapath dir");
 

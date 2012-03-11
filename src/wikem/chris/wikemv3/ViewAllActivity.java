@@ -23,6 +23,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v4.app.FragmentActivity;
+import wikem.chris.R;
  
 
 //these are compatability class stuff.

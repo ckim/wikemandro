@@ -1,6 +1,5 @@
 package wikem.chris.wikemv3;
 
-
 import java.sql.Date;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,9 +10,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.AndroidRuntimeException;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +23,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import wikem.chris.R;
 import wikem.chris.wikemv3.CategoryActivity;
 import wikem.chris.wikemv3.DictionaryDatabase;
 import wikem.chris.wikemv3.DictionaryProvider;
@@ -52,6 +49,10 @@ import wikem.chris.wikemv3.WebWordActivity;
  <!-- force_rebuild -> thrown if any sql db query (or upgrade) throws error, such as corrupted db
  
  <!-- String message = some sort of custom message... like 'plz goto market and upgrade your app'..-> 
+ <!-- String dl-path -> the path that the downloader ended up using (eg will change if sd card pulled out). SET in downloaderActivity ->
+ <!-- String default-path -> default path ... set up on first run with getFilesDir. -->
+ 
+ <!-- boolean displayNotePref -> hide or display notes -->
  *
  */
 
@@ -60,36 +61,13 @@ import wikem.chris.wikemv3.WebWordActivity;
     private TextView mTextView;
     private ListView mListView;
     public static final String PREFS_NAME = "MyPrefsFile";
-     public static String query;
+    public static String query;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-       /*as this is main activity per the manifest file. will do some housekeeping first
-        *  
-        */
-        try{
-            if (android.os.Environment.getExternalStorageState().equals(
-                    android.os.Environment.MEDIA_MOUNTED)) { initializeApp(); 	
-            } else if (android.os.Environment.getExternalStorageState().equals(
-                    android.os.Environment.MEDIA_UNMOUNTED)) {
-            	alertNoSD();
-            }
-          } catch (Exception e) { Log.d("SEARCHDICT on create", " no SD card"); alertNoSD();}
-
-         
-
-    /*    try {
- 			if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {   
-
- 	           throw new AndroidRuntimeException( "External storage (SD-Card) not mounted");
- 	           }
- 			else{ 				
- 				 initializeApp(); 				
- 				}
- 	       } catch (Exception e) { Log.d("SEARCHDICT on create", " no SD card"); alertNoSD();}
- 	  */   
+    
+        initializeApp(); 
    	 	checkIfNeedDBRebuild(); //does nothing now. was buggy.. 
    	 	toastIfJustSuccessfullyUdated();
         setContentView(R.layout.main);
@@ -97,9 +75,7 @@ import wikem.chris.wikemv3.WebWordActivity;
         mTextView = (TextView) findViewById(R.id.text);
         mListView = (ListView) findViewById(R.id.list);
         
-   /* ok to make ugly, imho useless, category thing 
-    *      
-    */
+ 
         String []categories=  getResources().getStringArray(R.array.category_array);
         mListView.setAdapter(  new ArrayAdapter<String>(this, R.layout.list_item, categories));        
         mListView.setOnItemClickListener(new OnItemClickListener() {
@@ -146,10 +122,8 @@ import wikem.chris.wikemv3.WebWordActivity;
          SharedPreferences.Editor editor = settings.edit();
          boolean firstOpened = settings.getBoolean("first_opened", true); //added v2. default if first_opened is true...thus assume upgraded version
          if (firstOpened){
-        	/* Toast toast = Toast.makeText(getApplicationContext(), R.string.first_instructions, Toast.LENGTH_LONG);
- 	 		toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
- 	 		toast.show();*/
- 	 		
+        	editor.putBoolean("displayNotePref", false);
+ 	 		editor.putString("default-path", getFilesDir().toString());
  	 		editor.putLong("epoch",1288369494 ); //128 is just some random old epoch such that will download newer
  	 		editor.commit();
  	 		
@@ -172,15 +146,12 @@ import wikem.chris.wikemv3.WebWordActivity;
         	 alertForceDB(); //only option from there is go to donloader test       
          }         
          else { //ie. every other time wikem opens...just not the first installation
+        	 //TODO put the async image dl service here no?
         	 
         	 //do nothing! everything else is done automatically no?
-        	 }
-    
-	  
-		
+        	 }    
 	}
     
- 
 	private void alertCustomMessage(String message) {
 		// implementation of this is to be determined... 
 		// rationale is to alert users to upgrade their app
@@ -202,8 +173,6 @@ import wikem.chris.wikemv3.WebWordActivity;
     	alert.show();		
 	}
 
-
-
 	private void alertFirstOpened() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		//String string = getString(R.string.info);
@@ -220,14 +189,10 @@ import wikem.chris.wikemv3.WebWordActivity;
     	alert.show();
 	}
 
-
-
 	protected void goToDisclaimer() {
 		startActivity(new Intent(this, DisclaimerActivity.class));
 		finish();		
 	}
-
-
 
 	private void alertForceDB() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -256,7 +221,7 @@ import wikem.chris.wikemv3.WebWordActivity;
    	   finish(); //exit app
 	}
 
-	private void alertNoSD() {
+	/*private void alertNoSD() {
 		//   No SD card. alert.
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		//String string = getString(R.string.info);
@@ -274,7 +239,7 @@ import wikem.chris.wikemv3.WebWordActivity;
     	AlertDialog alert = builder.create();      
     	alert.show();
 		
-	}
+	}*/
 
 	private void toastIfJustSuccessfullyUdated() {		     	
     	SharedPreferences settings = getSharedPreferences(SearchableDictionary.PREFS_NAME, 0);    
@@ -304,7 +269,6 @@ import wikem.chris.wikemv3.WebWordActivity;
      * Searches the dictionary and displays results for the given query.
      * @param query The search query
      */
-   
     
     private void showResults(String query) {
 
@@ -393,14 +357,9 @@ import wikem.chris.wikemv3.WebWordActivity;
         }
     }
     
-    private void viewAll() {
- 
+    private void viewAll() { 
     	startActivity(new Intent(this, ViewAllActivity.class));
-    	//startActivity(new Intent(this, ViewBackupActivity.class));
-    	//startActivity(new Intent(this, RestoreActivity.class));
-   // 	finish();
-    	
-	}
+  	}
 
 	//get string of date to display info
     public String getUpdateDate(){
@@ -412,11 +371,7 @@ import wikem.chris.wikemv3.WebWordActivity;
     	//    	return theLastUpdate.toString();
     }
     
-   
-    
-    private void displayInfo() {
-		
-		
+    private void displayInfo() {		
 		String lastUpdated = "Last update was: " + getUpdateDate() + ". ";
 		 
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -431,37 +386,22 @@ import wikem.chris.wikemv3.WebWordActivity;
     	           }
     	       });    	       
     	AlertDialog alert = builder.create();      
-    	alert.show();
-		
+    	alert.show();		
 	}
 
 	private void displayFavs() {
-     	startActivity(new Intent(this, FavoriteActivity.class));
-		
+     	startActivity(new Intent(this, FavoriteActivity.class));		
 	}
 
-	public void updateDb(){
-    	
+	public void updateDb(){    	
     	startActivity(new Intent(this, DownloaderTest.class));
     	finish();
     }
     
-   
- 
-    
-
-    
-
-
     @Override
         protected void onStop(){
-           super.onStop();
-
-         
-        }
-    
- 
-
+           super.onStop();         
+        } 
 
 }
 

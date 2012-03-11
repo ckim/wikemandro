@@ -34,6 +34,7 @@ import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
+import wikem.chris.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -243,6 +244,11 @@ public class DownloaderActivity extends Activity {
     	*/
     	
     	
+    	
+    	
+    	
+    	//maybe checkout answer for this http://stackoverflow.com/questions/3516842/android-view-windowmanagerbadtokenexception-exception-any-pointer/4011090#4011090
+    	//getting "xception class android.view.WindowManager$BadTokenExceptionSource method ViewRoot.setView()
     	   dialog = ProgressDialog.show(this, "Rebuilding WikEM", 
 	                "This will take less than a minute. Please do not interrupt this proccess. Thank you for your patience.", true);
 	        dialog.show();
@@ -289,11 +295,15 @@ public class DownloaderActivity extends Activity {
     	 */
         Log.e(LOG_TAG, "Download stopped: " + reason);
         String shortReason;
-        int index = reason.indexOf('\n');
+        int index = reason.indexOf('\n'); //returns -1 if doesnt exist
   //new start index      
         int index2 = reason.indexOf(':'); index2++;
         if (index >= 0) {
+        	try{
             shortReason = reason.substring(index2, index);
+        	}catch(IndexOutOfBoundsException e){
+        		shortReason = reason; 
+        		Log.e("dact","parsing downloadfailed error message, index OOB");}
         	//shortReason = reason.substring(0, index);
         } else {
             shortReason = reason;
@@ -582,12 +592,21 @@ public class DownloaderActivity extends Activity {
             if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO){
                 // Do something for froyo and above versions
                 mDataDir = getExternalFilesDir(null);
-
+                if (mDataDir != null){
+                	Log.d("downlac", mDataDir.toString());
+                }
+                else{Log.d("downlac", "the mdatadir is null with no sd card!");
+                	mDataDir = getFilesDir(); //a method of Context class that is like getexternalfilesdir but not external storage
+                }
             } else {
                 // do something for phones running an SDK before froyo
             	mDataDir = new File(mDataPath);
             }
-            
+            //TODO now save where the files are saved to
+            SharedPreferences settings = getSharedPreferences(SearchableDictionary.PREFS_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("dl-path", mDataDir.toString());
+            editor.commit();
             
             try {
                 // Download files.
@@ -602,8 +621,11 @@ public class DownloaderActivity extends Activity {
                 i.imageDownload(); //download the images to the sd card
                 
                 
-                
-               verify(config); //41211 ck:ok restored it now that the filesize matches
+           if (Singleton.verify == true)
+           {
+        	   verify(config); 
+           }
+           
           //after verified... make sure return new EPOCH and update last_updated
                 updateTimeStamp(config);
                 cleanup();
@@ -722,7 +744,7 @@ public class DownloaderActivity extends Activity {
         */
                 
                 Long lastUpdated = new Long(mLastUpdated);
-                File olddb = new File( mDataDir, DownloaderTest.DESTINATION_FILE);
+                File olddb = new File( mDataDir, Singleton.DESTINATION_FILE);
                 if (config.epoch <= lastUpdated.longValue() && olddb.exists()){ //check md5 or size
                 	throw new DownloaderException(
                             NO_UPDATE_MESSAGE);
@@ -1076,6 +1098,9 @@ public class DownloaderActivity extends Activity {
                                 
                     }*/
                 }
+            } catch (Exception ex) {  
+                //System.out.println("Entered catch");  
+                 Log.e("dact", "calling downloadstream threw an error");
             } finally {
                 is.close();
                 mHttpGet = null;
@@ -1103,7 +1128,7 @@ public class DownloaderActivity extends Activity {
             File srcFile = new File(mDataDir, src);
             File parent = srcFile.getParentFile();
             if (! parent.exists()) {
-                parent.mkdirs();
+                parent.mkdirs(); //does not throw ioexception. true if the necessary directories have been created, false if the target directory already exists or one of the directories can not be created.
                 Log.d("DLACT", "wtf? why making directory?");
 
             }
@@ -1233,7 +1258,7 @@ public class DownloaderActivity extends Activity {
     	public  void imageDownload(){
     		ArrayList<String> imagelist = null;
     		try {
-    			 imagelist = parsingXML(new URL(DownloaderTest.IMAGELIST_URL));
+    			 imagelist = parsingXML(new URL(Singleton.IMAGELIST_URL));
 			} catch (ClientProtocolException e) {e.printStackTrace();} catch (MalformedURLException e) {e.printStackTrace();} catch (IOException e) {e.printStackTrace();}
 			
 			download(imagelist);
@@ -1291,8 +1316,13 @@ public class DownloaderActivity extends Activity {
 	        		filename = imageurl.substring(imageurl.lastIndexOf('/') + 1);
 	        		File f = new File(mDataDir,filename);
 	        		if (!f.exists()){ //only dl files that don't exist
-	        			executeHttpGet(imageurl, f);
-	        			didDL = true;
+	        			try{
+	        				executeHttpGet(imageurl, f); //it wil throw cleintprotocolexception, ioexception, etc..	    	        		
+	        	        }catch(Exception e){ //was getting a few freezes which would call onDestroy. cathing error here should resolve i think in scenario where they had internet connection (so no 500 errror etc..) but then lost it
+	        	        	Log.e("donwloadactivbity", " couldnt executeHttpGet");
+	        	        	
+	        	        }
+	        				didDL = true;
 	        		}
 	    		}
     		} catch (Exception e) {	e.printStackTrace();Log.e("da", "error downloading images");}

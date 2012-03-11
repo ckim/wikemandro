@@ -22,6 +22,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 //import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import wikem.chris.R;
 
 
 public class CategoryActivity extends FragmentActivity implements

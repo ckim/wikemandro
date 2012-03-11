@@ -29,6 +29,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
+import wikem.chris.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -162,8 +163,8 @@ import android.widget.Toast;
 	        mBodyText = (EditText) findViewById(R.id.body);
 	        //hides soft ekyboard until edittext presed?
 	        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);	        
-	        wv.requestFocus();	     
-	        displayNoteIfExists(); 	
+	        wv.requestFocus();	 
+	        
 	        
 	        /*
 	         * create an asynch task to run in background and check online for updates
@@ -171,6 +172,8 @@ import android.widget.Toast;
 	         */
 	        asyncTask = new CheckUpdatesForPageTask();
 	        asyncTask.execute( );
+	        displayNoteIfExists(); 	
+
 	 
 		}
 		private boolean haveNetworkConnection()
@@ -238,17 +241,24 @@ import android.widget.Toast;
 				return Boolean.valueOf(false);
 			}
 
- 			protected void onPostExecute(Boolean result) {
- 				//won't be called if cancelled.
- 				if (result.booleanValue()){
-    					Log.d("wwact", "onpostexecute");
-
- 					//Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
- 					showUpdateAlert();
+ 		protected void onPostExecute(Boolean result) {
+ /* was getting java.lang.NullPointerException
+at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(WebWordActivity.java:246) . if result is null, it is null pointer*/
+  			if (result != null){			
+ 				
+ 				
+	 				//won't be called if cancelled.
+	 				if (result.booleanValue()){
+	    					Log.d("wwact", "onpostexecute");
+	
+	 					//Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
+	 					showUpdateAlert();
+	 				}
+	 				else{ //do nothing i guess
+	  				}
  				}
- 				else{
-  				}
-
+ 			else{ Log.d("wwact", "onpostexecute, result is null. error caught =)");			
+ 				}
 		     }
  			
  			 @Override
@@ -429,49 +439,25 @@ import android.widget.Toast;
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-
 		 @Override
 		 public boolean onPrepareOptionsMenu(Menu menu) {
 			 //You must return true for the menu to be displayed; if you return false it will not be shown.
 			 /*
 			  * this is called right before the menu is shown, every time it is shown.
-			  */
-			// MenuInflater inflater = getMenuInflater();
-		   //  inflater.inflate(R.menu.word_options2, menu); //this adds everything agian!
-		     
+			  */				     
 			 if (findNext==true && iterator.hasNext()){
 		        	menu.add(Menu.NONE, Menu.NONE, Menu.NONE, "Find Next!");
 		        	Log.d("WWA", "should have added new menu item");
 		        	findNext=false; //stop creating menus
-		        }
-			 
+		        }			 
 			 if (!displayNoteOrNot()) //ie hide the note
 			 {
-				// menu.removeItem(R.id.remove_edit_text);
 				 menu.setGroupVisible(R.id.remove_edit_text_group, false);
-				 menu.setGroupVisible(R.id.show_edit_text_group, true);
-
-				 
+				 menu.setGroupVisible(R.id.show_edit_text_group, true); 
 			 }
 			 else{
-				// menu.add
-				 //bc this is called every time... as long as the bool is accurate this will work
-				 //show menu icon
-				 //menu.removeItem(R.id.show_edit_text); ///////////////////////
-				 
 				 menu.setGroupVisible(R.id.remove_edit_text_group, true);
-				 menu.setGroupVisible(R.id.show_edit_text_group, false);
-				 
+				 menu.setGroupVisible(R.id.show_edit_text_group, false);				 
 			 }
 			 return true;
 		 }
@@ -483,32 +469,26 @@ import android.widget.Toast;
 		 }
 		 public void showUpdateAlert() {
 		 		Log.d("WEBWORDACTIVITY", " ok..inside showupdatealert");
-
-				AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 				alert.setTitle("Update Found!");						
 				alert.setMessage("Would you like to view newer version of '" + keyWord + "'?" );
 		
-		
 				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
-				  reloadPage();
-				  }
+				  reloadPage();  }
 				});
 		
 				alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 				  public void onClick(DialogInterface dialog, int whichButton) {
 				    // Canceled.
 				  }
-				});
-		
+				});		
 				alert.show();				
 		}
 
 		@Override
 		 public boolean onCreateOptionsMenu(Menu menu) {
-			//	Log.d("WEBWORDACTIVITY", " ok.. inside on create menu");
-			
-			 	if (keyWord.equals("About WikEM")){
+				if (keyWord.equals("About WikEM")){
 			 		 /*
 					  * put in easter egg. for hidden functionality for beta testing
 					  */
@@ -516,27 +496,24 @@ import android.widget.Toast;
 			 		 MenuInflater inflater = getMenuInflater();
 				     inflater.inflate(R.menu.word_options2, menu);
 				     return true;
-			 		
 			 	}
 			 	else{
 			        MenuInflater inflater = getMenuInflater();
 			        inflater.inflate(R.menu.word_options2, menu);
-			               
-			        
 			        return true;
 			 	}
 		    }
 	    @Override
 	    public boolean onOptionsItemSelected(MenuItem item) {
 	        switch (item.getItemId()) {
-	            case R.id.search:
+	        	case R.id.search:
+	        		onSearchRequested(); 
+	        		return true;
+	            case R.id.find:
 	            //   ?? onSearchRequested(); ??what is this
 	          // startSearch(null,false,null,false);	    
 	            	findTextAlert();
-	                return true;
-	         //   case R.id.update: //menu item for updating
-	          //  	startActivity(new Intent(this, DownloaderTest.class));
-	            	//return true;
+	                return true;	        
 	            case R.id.favorite:
 	            	favoriteOptionSelect();
 	            	return true;
@@ -560,7 +537,6 @@ import android.widget.Toast;
 	    }
 
 	private void displayInfo() {
-
 		Date ourDbEpoch = new Date(Long.parseLong(lastUpdated) * 1000);
     	AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	
@@ -589,7 +565,6 @@ import android.widget.Toast;
 			
 			return false;
 		}
-
 	private void findTextAlert() {
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 	
@@ -622,10 +597,9 @@ import android.widget.Toast;
 			SharedPreferences settings = getSharedPreferences(SearchableDictionary.PREFS_NAME, 0);
 			
 			
-			if (settings.getBoolean("displayNotePref", true)){ //ie if user wants to show note (the 2nd true is default)
+			if (settings.getBoolean("displayNotePref", false)){ //ie if user wants to show note (by default false)
 				
 			   mBodyText.setVisibility(View.VISIBLE);
-
 				
 				if(settings.contains("note-" + keyWord)){
 					String note = settings.getString("note-" + keyWord, "none"); //second "keyword" is just default}
@@ -638,6 +612,10 @@ import android.widget.Toast;
 			}
 			else { //ie if the displaynote prefs wants to hide the note
 			  mBodyText.setVisibility(View.GONE);
+			  if(settings.contains("note-" + keyWord)){
+				  //ie if note exists, toast
+					Toast.makeText(this, "custom note exists", Toast.LENGTH_SHORT).show();
+				}
 			}
 				
 		
@@ -679,7 +657,7 @@ import android.widget.Toast;
 	private boolean displayNoteOrNot(){ //returns the preference to display..t or f
 		 
 		SharedPreferences settings = getSharedPreferences(SearchableDictionary.PREFS_NAME, 0);    
-		return settings.getBoolean("displayNotePref", true);
+		return settings.getBoolean("displayNotePref", false);
 	}
 	private void displayNote(){
 		//hideNoteonOptions = true; //ie. show the 'hide note' option again
@@ -923,7 +901,7 @@ import android.widget.Toast;
 			}	 
 		 
 		 private File getAppDir(){
-			 int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+		/*	 int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 			 File d = null;
 	            if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO){
 	                // Do something for froyo and above versions
@@ -937,7 +915,21 @@ import android.widget.Toast;
 				        }
  	     
 	            return d;
-	            
+	        */
+			 File d = null;
+				SharedPreferences settings = getSharedPreferences(SearchableDictionary.PREFS_NAME, 0);
+	       		String path = settings.getString("dl-path", "null");
+	       		if (!path.equals("null")){
+	       			d = new File(path);
+	       			if (d.exists()){ 
+	       				Log.d("dictdatab", "path is " + path);
+		       			return d;
+	       			}
+	       		}
+	       		//shouldn't be null. just incase give it something.
+	       		String defaultPath = settings.getString("default-path", "null");		       			
+       			d = new File (defaultPath);
+       			return d;
 			 
 		 }
 /*

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-  
+   <item android:id="@+id/search"
+          android:title="Search"
+          android:icon="@drawable/ic_menu_search" />
   	<item android:id = "@+id/favorite"
    		  android:title="@string/menu_favorite"
    		   android:icon="@drawable/ic_fav" /> 
@@ -21,9 +23,9 @@
     <item android:id = "@+id/edit_online"
     	  android:title = "@string/menu_edit"
     	  android:icon= "@drawable/ic_pencil" /> 
-    	  
-    	    <item android:id="@+id/search"
-          android:title="Find Text"
+    	 
+    	    <item android:id="@+id/find"
+          android:title="find text"
           android:icon="@drawable/ic_menu_search" />
           <item android:id = "@+id/about_this_page"
           android:title = "Info"
