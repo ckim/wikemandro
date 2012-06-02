@@ -4,6 +4,8 @@ import java.sql.Date;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -110,6 +112,12 @@ import wikem.chris.wikemv3.WebWordActivity;
              query = intent.getStringExtra(SearchManager.QUERY);
             showResults(query);
         }
+        
+        
+        //see if can start searchmanager by DEFAULT
+        
+        SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+        searchManager.startSearch(null, false,new ComponentName(this, SearchableDictionary.class), null, false);
     }
 
     
