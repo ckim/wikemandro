@@ -304,7 +304,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
         return query(selection, selectionArgs, columns);
 	}
 	public Cursor getExactWordMatch(String query, String[] columns) {
-        String selection = KEY_WORD + " MATCH ?";
+        String selection = KEY_WORD + " = ?";
         String[] selectionArgs = new String[] {query};
  
         return query(selection, selectionArgs, columns);
@@ -638,8 +638,8 @@ public int updateContent(ContentValues values, String selection, String thePageT
 		
 		private   void overwriteNativeDb(String path){
 			File dbDir = getAppDir();
-			//File src = new File(dbDir, Singleton.DESTINATION_FILE);
-			File src = new File(dbDir, Singleton.DESTINATION_FILE_SLIMDB);
+			File src = new File(dbDir, Singleton.DESTINATION_FILE);
+			//File src = new File(dbDir, Singleton.DESTINATION_FILE_SLIMDB);
 
 			File dest = new File (path );
 			try {

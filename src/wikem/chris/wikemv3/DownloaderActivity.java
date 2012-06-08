@@ -618,7 +618,7 @@ public class DownloaderActivity extends Activity {
                 
                 
                 ImageDownloader i = new ImageDownloader();//my custom subclass
-                i.downloadCustom(Singleton.SRC_OF_DATA_SLIM, Singleton.DESTINATION_FILE_SLIMDB, true);
+          //      i.downloadCustom(Singleton.SRC_OF_DATA_SLIM, Singleton.DESTINATION_FILE_SLIMDB, true);
                 i.imageDownload(); //download the images to the sd card
                 
                 

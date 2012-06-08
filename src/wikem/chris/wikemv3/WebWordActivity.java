@@ -138,12 +138,11 @@ import android.widget.Toast;
 	            lastUpdated = cursor.getString(uIndex);
 	            
 	            String wikemEntry = null;
-	            if (cursor.isNull(dIndex)){
 	     /*
 	      *     how does constantly init and closing db effect performance?   	
 	      *     switch to async eventually
 	      */
-	          Log.d("wwact", "ok. is null. trying to load from extdb");
+	         /* Log.d("wwact", "ok. is null. trying to load from extdb");
 	          DictionaryDatabase.initializeExternalDB();
 	          final Cursor cursorB = managedQuery(DictionaryProvider.BCONTENT_URI, null, null, new String[] {keyWord}, null);
 		          if(cursorB !=null){
@@ -156,15 +155,15 @@ import android.widget.Toast;
 	          
 		        	  Log.d("wwact", "successsss. CLOSING extdb");
 		        	  DictionaryDatabase.closeExternalDB();
-		          }	else{Log.e("WWACT", "cursor is null from extbb");}
+		          }	else{Log.e("WWACT", "cursor is null from extbb");}*/
 		        /*
 	         *    	
 	         */
 	            	
-	            }else{
+	           
   	       //     String wikemEntry = cursor.getString(dIndex);
 	            	wikemEntry = cursor.getString(dIndex);
-	            }
+	            
 	            if( highlight_text){
 		    		if (SearchableDictionary.query==null){Log.d("WVA", "watch out!!! the query text being called is null");	}
 		    		else{
