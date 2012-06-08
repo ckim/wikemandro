@@ -284,11 +284,14 @@ public int updateContent(ContentValues values, String selection, String thePageT
  */
 	public Cursor getAllCategory(String query, String[] columns) {
 		//String selection = WIKEM_CATEGORY + " MATCH ?";
-		String selection = WIKEM_CATEGORY + " LIKE ?";
+		
 		//String[] selectionArgs = new String[]{query+"*"};
+
+		String selection = WIKEM_CATEGORY + " LIKE ?";
+
 		String[] selectionArgs = new String[]{"%" + query + "%"};
-		Log.d(TAG, "yo yo yo, custom category accessed");
- 		
+		
+  		
 		//return query(selection, selectionArgs, columns);
 	
 		//get categories in Alphabetical order
