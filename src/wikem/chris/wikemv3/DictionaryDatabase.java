@@ -455,7 +455,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
             
     }
     
-    public static void initializeDB(){ //for the external. otw was initializing too many times
+    public static void initializeExternalDB(){ //for the external. otw was initializing too many times
     	 e = new ExternalSQLHelper (Singleton.DESTINATION_FILE); 
     }
     public static void closeExternalDB(){ //for the external
