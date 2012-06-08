@@ -137,12 +137,34 @@ import android.widget.Toast;
 	            Log.d("wwact", "last updated" + cursor.getString(uIndex));
 	            lastUpdated = cursor.getString(uIndex);
 	            
-	            
-	            
-	            //set the word/wiki entry name textview layout from the string in the cursor
-	            // word.setText(cursor.getString(wIndex));
-	            //the definition won't be in a webview for now, but simple textview using "Spanned" and fromHtml method
-	            String wikemEntry = cursor.getString(dIndex);
+	            String wikemEntry = null;
+	            if (cursor.isNull(dIndex)){
+	     /*
+	      *     how does constantly init and closing db effect performance?   	
+	      *     switch to async eventually
+	      */
+	          Log.d("wwact", "ok. is null. trying to load from extdb");
+	          DictionaryDatabase.initializeExternalDB();
+	          final Cursor cursorB = managedQuery(DictionaryProvider.BCONTENT_URI, null, null, new String[] {keyWord}, null);
+		          if(cursorB !=null){
+		        	  
+		          
+		        	  cursorB.moveToFirst(); //should be only one row
+		        	  int cbIndex = cursorB.getColumnIndexOrThrow(DictionaryDatabase.KEY_DEFINITION);
+	          	 
+		        	  wikemEntry = cursorB.getString(cbIndex);
+	          
+		        	  Log.d("wwact", "successsss. CLOSING extdb");
+		        	  DictionaryDatabase.closeExternalDB();
+		          }	else{Log.e("WWACT", "cursor is null from extbb");}
+		        /*
+	         *    	
+	         */
+	            	
+	            }else{
+  	       //     String wikemEntry = cursor.getString(dIndex);
+	            	wikemEntry = cursor.getString(dIndex);
+	            }
 	            if( highlight_text){
 		    		if (SearchableDictionary.query==null){Log.d("WVA", "watch out!!! the query text being called is null");	}
 		    		else{
@@ -155,7 +177,7 @@ import android.widget.Toast;
 	          //  summary =  "<html>" + head_css + "<body>"+ FixHTML.fixImages(wikemEntry)+"</body></html>";
 	            summary =  "<html>" + head_css + "<body>"+ wikemEntry+"</body></html>";
  	            
- 	             word.setText(cursor.getString(wIndex));
+ 	             word.setText(keyWord);
 	            //wv.loadData(summary, mimeType, encoding); this piece of crap doesn't work ...drove me crazy
  	        
 		        wv.loadDataWithBaseURL(loadwbaseurl, summary,"text/html", "UTF-8", null);

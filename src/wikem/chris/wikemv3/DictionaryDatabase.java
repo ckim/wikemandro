@@ -303,6 +303,19 @@ public int updateContent(ContentValues values, String selection, String thePageT
         String[] selectionArgs = new String[] {query+"%"};
         return query(selection, selectionArgs, columns);
 	}
+	public Cursor getExactWordMatch(String query, String[] columns) {
+        String selection = KEY_WORD + " MATCH ?";
+        String[] selectionArgs = new String[] {query};
+ 
+        return query(selection, selectionArgs, columns);
+	}
+	  public Cursor getBackupWord(String s, String[] columns) { //mine.. to search table
+	    	String selection = DictionaryDatabase.KEY_WORD + " MATCH ?";
+	        String[] selectionArgs = new String[] {s};
+
+	        return queryExternalDb(selection, selectionArgs, columns);
+	     }
+
     public  Cursor getWordMatches(String query, String[] columns) {
         String selection = KEY_WORD + " MATCH ?";
         String[] selectionArgs = new String[] {query+"*"};
@@ -335,13 +348,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
          *   the entire table, but sorting the relevance could be difficult.
          */
     }
-    public Cursor getBackupWord(String rowId, String[] columns) { //mine.. to search table
-    	String selection = DictionaryDatabase.KEY_WORD + " = ?";
-        String[] selectionArgs = new String[] {rowId};
-
-        return queryExternalDb(selection, selectionArgs, columns);
-     }
-
+  
     /**
      * Performs a database query.
      * @param selection The selection clause
@@ -631,8 +638,8 @@ public int updateContent(ContentValues values, String selection, String thePageT
 		
 		private   void overwriteNativeDb(String path){
 			File dbDir = getAppDir();
-			File src = new File(dbDir, Singleton.DESTINATION_FILE);
-			//File src = new File(dbDir, Singleton.DESTINATION_FILE_SLIMDB);
+			//File src = new File(dbDir, Singleton.DESTINATION_FILE);
+			File src = new File(dbDir, Singleton.DESTINATION_FILE_SLIMDB);
 
 			File dest = new File (path );
 			try {

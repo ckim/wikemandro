@@ -27,7 +27,7 @@ public class DictionaryProvider extends ContentProvider {
     public static final Uri ALL_URI = Uri.parse("content://" + AUTHORITY + "/dictionary/all");
     public static final Uri BACKUP_URI = Uri.parse("content://" + AUTHORITY + "/dictionary/backup"); 
     public static final Uri TITLE_URI = Uri.parse("content://" + AUTHORITY + "/dictionary/title");
-    public static final Uri ID_URI = Uri.parse("content://" + AUTHORITY + "/dictionary/rowid");
+    public static final Uri ID_URI = Uri.parse("content://" + AUTHORITY + "/dictionary/rowid"); //get EXACT match given a word
     public static final Uri ID_LIKE_URI = Uri.parse("content://" + AUTHORITY + "/dictionary/like");
     
     
@@ -136,7 +136,7 @@ public class DictionaryProvider extends ContentProvider {
                   throw new IllegalArgumentException(
                       "selectionArgs must be provided for the Uri: " + uri);
                 }*/
-                return bsearch(selection);//dunno if this is correct but whatever...
+                return bsearch(selectionArgs[0]);//dunno if this is correct but whatever...
             case GET_WORD:
                 return getWord(uri);
             case REFRESH_SHORTCUT:
@@ -176,7 +176,7 @@ public class DictionaryProvider extends ContentProvider {
         String[] columns = new String[] {
             BaseColumns._ID};
 
-        return mDictionary.getWordMatches(query, columns); //only search the titles
+        return mDictionary.getExactWordMatch(query, columns); //only search the titles
 		
 	}
 
@@ -256,14 +256,14 @@ public class DictionaryProvider extends ContentProvider {
 		return mDictionary.getWordMatchesFromTable(query, columns); //simple correction to change search query to fulltext
     }
 
-    private Cursor bsearch(String rowID) { //for backup db. show word from row id
+    private Cursor bsearch(String title) { //for backup db.  ?try get definition from keyword
       //query = query.toLowerCase();
       String[] columns = new String[] {
           BaseColumns._ID,
-          DictionaryDatabase.KEY_WORD,
+        //  DictionaryDatabase.KEY_WORD,
           DictionaryDatabase.KEY_DEFINITION};
 
-      return mDictionary.getBackupWord(rowID, columns);  
+      return mDictionary.getBackupWord(title, columns);  
     }
     private Cursor searchTitle(String query) {
         query = query.toLowerCase();
