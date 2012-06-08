@@ -16,12 +16,12 @@ public class Singleton {
 	    
 	    
 	    public static final String SRC_OF_DATA = "http://dl.wikem.org/files/android_db" ;
-	    public static final String DESTINATION_FILE = "junk.db";
+	    public static final String DESTINATION_FILE = "dest";
 	    
 	    public static final String SRC_OF_DATA_SLIM = "http://dl.wikem.org/files/android_dbslim" ; 
 	  //public static final String SRC_OF_DATA_SLIM = "http://dl.wikem.org/files/testforchris.db" ; 
 
-	    public static final String DESTINATION_FILE_SLIMDB = "slim.db";
+	    public static final String DESTINATION_FILE_SLIMDB = "slm";
 
 		
 }

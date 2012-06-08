@@ -29,15 +29,13 @@ import android.util.Log;
 public abstract class ExternalStorageReadOnlyHelper{
     private SQLiteDatabase database;
     private File dbFile;
-  //  private SQLiteDatabase.CursorFactory factory;
-    
-   
-    public ExternalStorageReadOnlyHelper(
-        String dbFileName
-        //,SQLiteDatabase.CursorFactory factory) 
-        ){
-      // this.factory = factory;
-       
+ 
+    //ck-just pass in a file now... not a string for a name.
+    public ExternalStorageReadOnlyHelper(  File f){
+
+   // public ExternalStorageReadOnlyHelper(  String dbFileName){
+     /*   
+      *OLD INITIALIZATIONS STUFF. ignore... 
        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
            throw new AndroidRuntimeException(
                "External storage (SD-Card) not mounted");
@@ -51,7 +49,8 @@ public abstract class ExternalStorageReadOnlyHelper{
 
            appDbDir.mkdirs();
        }
-       this.dbFile = new File(appDbDir, dbFileName);
+       this.dbFile = new File(appDbDir, dbFileName);*/
+    	this.dbFile = f;
     }
     
     public boolean databaseFileExists() {

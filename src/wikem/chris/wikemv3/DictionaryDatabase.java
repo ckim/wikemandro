@@ -456,7 +456,14 @@ public int updateContent(ContentValues values, String selection, String thePageT
     }
     
     public static void initializeExternalDB(){ //for the external. otw was initializing too many times
-    	 e = new ExternalSQLHelper (Singleton.DESTINATION_FILE); 
+    	//
+     	// e = new ExternalSQLHelper (Singleton.DESTINATION_FILE); 
+		File f = new File(mDatabaseOpenHelper.getAppDir(), Singleton.DESTINATION_FILE);
+
+    	e = new ExternalSQLHelper (f); 
+    	
+    	//DEBUGGING
+    	Log.d("dd debugging!", f.toString());
     }
     public static void closeExternalDB(){ //for the external
     	e.close();
@@ -507,6 +514,7 @@ public int updateContent(ContentValues values, String selection, String thePageT
         private static final String FTS_TABLE_CREATE =
                     "CREATE VIRTUAL TABLE " + FTS_VIRTUAL_TABLE +
                     " USING fts3 (" +
+                    		//in app that builds dbs, "tokenize = porter" added here
                     KEY_WORD + " CONSTRAINT UNIQUE ON CONFLICT IGNORE "+ ", " +
                     KEY_DEFINITION + ", " +
                     WIKEM_CATEGORY + ", " + WIKEM_URI + ", " + FAVORITE + ", " + LAST_UPDATE + ");";
@@ -596,8 +604,8 @@ public int updateContent(ContentValues values, String selection, String thePageT
 	       			if (d.exists()){ 
 	       				Log.d("dictdatab", "path is " + path);
 		       			return d;
+	       				}
 	       			}
-	       		}
 	          //otherwise something is strange... either d is null or the path from the sharedprefs doesnt exist
  	      	   int currentapiVersion = android.os.Build.VERSION.SDK_INT;					
 		       		if (currentapiVersion >= android.os.Build.VERSION_CODES.FROYO){
@@ -623,8 +631,8 @@ public int updateContent(ContentValues values, String selection, String thePageT
 		
 		private   void overwriteNativeDb(String path){
 			File dbDir = getAppDir();
-		//	File src = new File(dbDir, Singleton.DESTINATION_FILE);
-			File src = new File(dbDir, Singleton.DESTINATION_FILE_SLIMDB);
+			File src = new File(dbDir, Singleton.DESTINATION_FILE);
+			//File src = new File(dbDir, Singleton.DESTINATION_FILE_SLIMDB);
 
 			File dest = new File (path );
 			try {
