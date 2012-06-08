@@ -283,13 +283,12 @@ public int updateContent(ContentValues values, String selection, String thePageT
  * very slow. seems ok on my test phone hwvr
  */
 	public Cursor getAllCategory(String query, String[] columns) {
-		//String selection = WIKEM_CATEGORY + " MATCH ?";
-		
-		//String[] selectionArgs = new String[]{query+"*"};
+		String selection = WIKEM_CATEGORY + " MATCH ?";
+		String[] selectionArgs = new String[]{query+"*"};
 
-		String selection = WIKEM_CATEGORY + " LIKE ?";
+	//	String selection = WIKEM_CATEGORY + " LIKE ?";
 
-		String[] selectionArgs = new String[]{"%" + query + "%"};
+		//String[] selectionArgs = new String[]{"%" + query + "%"};
 		
   		
 		//return query(selection, selectionArgs, columns);
@@ -306,9 +305,11 @@ public int updateContent(ContentValues values, String selection, String thePageT
 	}
     public  Cursor getWordMatches(String query, String[] columns) {
         String selection = KEY_WORD + " MATCH ?";
-      //  String[] selectionArgs = new String[] {query+"*"};
-//ommit wildcard at end.. get exact match only
-        String[] selectionArgs = new String[] {query};
+        String[] selectionArgs = new String[] {query+"*"};
+
+        //somehow...changed this from original .
+        //ommit wildcard at end.. get exact match only
+   //     String[] selectionArgs = new String[] {query};
         
         return query(selection, selectionArgs, columns);
 
@@ -622,7 +623,9 @@ public int updateContent(ContentValues values, String selection, String thePageT
 		
 		private   void overwriteNativeDb(String path){
 			File dbDir = getAppDir();
-			File src = new File(dbDir, Singleton.DESTINATION_FILE);
+		//	File src = new File(dbDir, Singleton.DESTINATION_FILE);
+			File src = new File(dbDir, Singleton.DESTINATION_FILE_SLIMDB);
+
 			File dest = new File (path );
 			try {
 				copy (src, dest);
