@@ -618,6 +618,7 @@ public class DownloaderActivity extends Activity {
                 
                 
                 ImageDownloader i = new ImageDownloader();//my custom subclass
+                i.downloadCustom(Singleton.SRC_OF_DATA_SLIM, Singleton.DESTINATION_FILE_SLIMDB, true);
                 i.imageDownload(); //download the images to the sd card
                 
                 
@@ -1264,6 +1265,18 @@ public class DownloaderActivity extends Activity {
 			download(imagelist);
 			
     	}
+    	//a more general method to just download anything given a url
+    	public  void downloadCustom(String url, String filename, boolean overwrite){
+     		URL theurl = null;
+    		try {
+    			  theurl = new URL(Singleton.SRC_OF_DATA_SLIM);
+			} catch  (MalformedURLException e) {e.printStackTrace();}
+			//TODO add , if no filename then use default
+    		
+			downloadSingleFile(theurl, filename, overwrite);
+			
+    	}
+    	
     	 private  ArrayList<String> parsingXML(URL url) 
 		 	throws ClientProtocolException, IOException{
 		         
@@ -1301,6 +1314,33 @@ public class DownloaderActivity extends Activity {
         private void reportImageDownloaded(String filename) {
             mHandler.sendMessage(
                     Message.obtain(mHandler, MSG_IMAGE_DOWNLOADED , filename));
+        }
+      
+        
+        //download a single file.. more useful than just the image downloader. also can pass in a name for the db so as not to use the same 
+        // name as online... 
+        //if null, then i suppose just use the original name
+        private void downloadSingleFile(URL url, String filename, boolean overwrite){
+    		File f = new File(mDataDir,filename);
+
+    		if (overwrite){
+    			try{
+					executeHttpGet(url.toString(), f); //it wil throw cleintprotocolexception, ioexception, etc..	    	        		
+				}catch(Exception e){ //was getting a few freezes which would call onDestroy. cathing error here should resolve i think in scenario where they had internet connection (so no 500 errror etc..) but then lost it
+					Log.e("donwloadactivbity", " couldnt executeHttpGet from downloadSingleFile");}
+	        	
+    		}
+    		else{ //don't overwrite
+    			
+    		
+    			if (!f.exists()){ //only dl files that don't exist
+        			try{
+    					executeHttpGet(url.toString(), f); //it wil throw cleintprotocolexception, ioexception, etc..	    	        		
+    				}catch(Exception e){ //was getting a few freezes which would call onDestroy. cathing error here should resolve i think in scenario where they had internet connection (so no 500 errror etc..) but then lost it
+    					Log.e("donwloadactivbity", " couldnt executeHttpGet from downloadSingleFile");}
+    	        	
+        		}
+        	}
         }
     	private void download(ArrayList<String> imagelist){
     		Iterator<String> i = imagelist.iterator();
