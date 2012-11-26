@@ -315,7 +315,7 @@ at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(Web
 					badurl.replace('-', '_');
 					badurl.replace('(', '_');
 					badurl.replace(')', '_');
-					parseLinkRecursive(badurl);
+					parseLinkRecursive(badurl); //why am i even using this?
 					//launchAWordSearch(url);
 				}
 			}
