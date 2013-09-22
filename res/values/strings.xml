@@ -92,7 +92,7 @@ li li li {
     <string name="search_label">WikEM Entry </string>
     
     <!-- edittext stuffs -->
-    <string name="edittext_hint">Type here for custom note...</string>
+    <string name="edittext_hint">Type here for custom note</string>
 
     <!-- The hint text that appears in the search box. -->
     <string name="search_hint">full-text: hit \'Enter\' after search term </string>
@@ -112,7 +112,7 @@ li li li {
     <string name="search_instructions">Thank you for using WikEM for Android.\n Please feel free to email feedback to mobile@wikem.org\n \n Press the search button to get started </string>
 	<string name="first_instructions"> Welcome. WikEM and wikem.org are intended for EM physicians. Before we can begin we will download the most recent content from wikem.org. The wiki is always changing, thus, auto-updating is turned off (so as to avoid exceeding the limits of wireless data-plan). Update as often as you please by simply selecting the option in menu. Enjoy.</string>
 	<!-- To be shown on textview at start activity -->
-	<string name="search_instructions2"> WikEM (hit \'Search\' button to begin, or, browse categories) </string>
+	<string name="search_instructions2"> WikEM (press here or \'Search\' button or browse categories) </string>
     
     	<!-- To be shown on textview at dbload -->
     	<string name="dbLoad_text"> WikEM (wiki + Emergency Medicine) is an open-source-style knowledge management system designed to facilitate dissemination of concise, practical Emergency Medicine knowledge written by an expert community. Medical knowledge traditionally stems from textbooks and practice guidelines whose content is now largely being distributed electronically. The problem with this system within emergency medicine is three-fold. First, the need for costly subscriptions creates access barriers which are exclusive to institutions that can afford them. Second, medical knowledge and practice standards are in a continuous state of flux, rendering the most recent publications (eg. edition of a textbook) obsolete within a few years. Third, it is often necessary in emergency settings that outside knowledge can be easily accessible and distilled to the essentials for patient management.WikEM hopes to overcome these problems with a wiki style database which is adapted to mobile operating systems such as Android.</string>
