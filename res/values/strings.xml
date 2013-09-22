@@ -109,7 +109,7 @@ li li li {
     <string name="settings_description">WikEM entries</string>
 
     <!-- General instructions in the main activity. -->
-    <string name="search_instructions">Thank you for using WikEM for Android.\n Please feel free to email feedback to christopherkim.wikem@gmail.com.\n \n Press the search button to get started </string>
+    <string name="search_instructions">Thank you for using WikEM for Android.\n Please feel free to email feedback to mobile@wikem.org\n \n Press the search button to get started </string>
 	<string name="first_instructions"> Welcome. WikEM and wikem.org are intended for EM physicians. Before we can begin we will download the most recent content from wikem.org. The wiki is always changing, thus, auto-updating is turned off (so as to avoid exceeding the limits of wireless data-plan). Update as often as you please by simply selecting the option in menu. Enjoy.</string>
 	<!-- To be shown on textview at start activity -->
 	<string name="search_instructions2"> WikEM (hit \'Search\' button to begin, or, browse categories) </string>
@@ -157,11 +157,13 @@ li li li {
     	<item>Airway/Resus</item>
         <item>Cards</item> 
         <item>Derm</item>
-        <item>Drugs</item>      
+        <item>Drugs</item>  
+        <item>EBQ</item>    
         <item>Endo</item>
         <item>ENT</item>
         <item>Environ</item>
         <item>FEN</item>
+        <item>GEMC</item>
 		<item>GI</item>
 		<item>GU</item>
 		<item>Heme/Onc</item>

@@ -12,11 +12,14 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -75,6 +78,8 @@ import wikem.chris.wikemv3.WebWordActivity;
         setContentView(R.layout.main);
 
         mTextView = (TextView) findViewById(R.id.text);
+    
+        
         mListView = (ListView) findViewById(R.id.list);
         
  
@@ -114,13 +119,31 @@ import wikem.chris.wikemv3.WebWordActivity;
         }
         
         
-        //see if can start searchmanager by DEFAULT
-        
+        //see if can start searchmanager by DEFAULT. somtimes buggy if first run
+        if (!isFirstRun()){
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
         searchManager.startSearch(null, false,new ComponentName(this, SearchableDictionary.class), null, false);
+        Log.v("searchdic", "not 1st run");
+        }
+        mTextView.setOnTouchListener(new OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                //if (event.getAction() == MotionEvent.ACTION_UP)
+                   // Toast.makeText(getApplicationContext(), "Touched", Toast.LENGTH_SHORT)                           .show();
+                	         onSearchRequested();         
+
+                return false;
+
+            }
+        });
     }
 
-    
+    private boolean isFirstRun(){
+    	SharedPreferences settings = getSharedPreferences(SearchableDictionary.PREFS_NAME, 0);
+        return settings.getBoolean("first_opened", true);
+      
+    }
     
     private void initializeApp() {
 		// will do some initialization maintenance stuff.. but only if there is an SD card.
@@ -331,7 +354,8 @@ import wikem.chris.wikemv3.WebWordActivity;
 		            });
         }
     }
-
+    
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

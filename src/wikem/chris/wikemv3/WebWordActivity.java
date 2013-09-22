@@ -361,7 +361,7 @@ at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(Web
 						Log.d("WebWordActivity", "absolute link");
 						// if link is an image don't parse it. do nothing and return true
 						String fileNamespace = "File:"; 
-				
+						
 						if(!url.contains(fileNamespace)){
 							 parseAbsoluteLink(url);
 						}
@@ -425,8 +425,9 @@ at wikem.chris.wikemv3.WebWordActivity$CheckUpdatesForPageTask.onPostExecute(Web
 			//link has the baseurl and comes out as file:///wiki/
         //	Log.d("wwa", "link is: " + url);
 
-	        url=url.substring(13); 
-	        Log.d("wwa", "link is: " + url);
+	   
+		url = url.substring(url.lastIndexOf('/') + 1);   
+		Log.d("wwa", "link is: " + url);
 	      	 //   word = word.replace('-', ' ').trim();
 	        url = url.replace('_', ' ').trim();
 	        try {
