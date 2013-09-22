@@ -1222,6 +1222,7 @@ public class DownloaderActivity extends Activity {
     private final static int MSG_IMAGE_DOWNLOADED = 4;
     
     //message_info is the tag of potential message that i want to relay to users
+    //eg?<message> "plz upgrade" <message/>
     private final static String MESSAGE_INFO = "message";
     private static boolean containsMyCustomMessage = false;
     private static String parsedMessageFromInfoXML = null;
